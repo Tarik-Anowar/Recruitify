@@ -1,8 +1,8 @@
-const Skill = require('../models/skillModel.js');  // Assuming Skill model is defined here
+const Skill = require("../models/skillModel.js"); // Assuming Skill model is defined here
 
 exports.fetchAllSkills = async (req, res) => {
   try {
-    const skills = await Skill.find().select('_id skill');  // Fetch all skills from MongoDB
+    const skills = await Skill.find(); // Fetch all skills from MongoDB
 
     if (!skills || skills.length === 0) {
       return res.status(404).json({ error: "No skills found" });
@@ -10,7 +10,7 @@ exports.fetchAllSkills = async (req, res) => {
 
     res.status(200).json({ skills });
   } catch (error) {
-    console.error('Error fetching skills:', error);
+    console.error("Error fetching skills:", error);
 
     res.status(500).json({
       error: "Internal server error",

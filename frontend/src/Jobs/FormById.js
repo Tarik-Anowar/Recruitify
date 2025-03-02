@@ -28,12 +28,12 @@ const FormById = () => {
 
   const skillsList = useSelector((state) => state.skills.skillsList ?? []); // Get skills list
   const skillsDictionary = skillsList.reduce((acc, skill) => {
-    acc[skill._id] = skill.skill; 
+    acc[skill._id] = skill.skill;
     return acc;
   }, {});
   useEffect(() => {
     dispatch(fetchAllSkills());
-  }, [dispatch])
+  }, [dispatch]);
 
   const skillsContainerRef = useRef(null);
 
@@ -94,9 +94,9 @@ const FormById = () => {
     });
   };
 
-  const handleViewMoreJobs = () =>{
+  const handleViewMoreJobs = () => {
     dispatch(viewSimilarJobs(formId));
-  }
+  };
 
   return (
     <div className={styles.formbyidPage} id="job-container">
@@ -104,12 +104,11 @@ const FormById = () => {
         <img
           className={styles.avatar}
           src={avatarUrl ? avatarUrl : "/ppic.jpg"}
-
           alt={jobForm.ownerProfile.name}
         />
         <span className={styles.ownerName}>{jobForm.ownerProfile.name}</span>
 
-        <div className={styles.ownerEmail} >
+        <div className={styles.ownerEmail}>
           Email:
           <span className={styles.ownerEmailText}>
             {" "}
@@ -118,31 +117,28 @@ const FormById = () => {
         </div>
       </div>
       <div className={styles.jobDescSection}>
-
         <div className={styles.jobRole}>
-
           <span className={styles.jobTexts}>
-            <WorkIcon />
-
-
-            {" "}{jobForm.jobRole}{" "}
+            <WorkIcon /> {jobForm.jobRole}{" "}
             {jobForm.company && <text>({jobForm.company})</text>}
           </span>
 
-          {jobForm.ownerProfile._id === userInfo.user._id &&
+          {jobForm.ownerProfile._id === userInfo.user._id && (
             <div className={styles.interviewSection}>
-              <button onClick={() => navigate("/interview")}>Take Interview</button>
+              <button onClick={() => navigate("/interview")}>
+                Take Interview
+              </button>
             </div>
-          }
+          )}
 
-          {jobForm.ownerProfile._id !== userInfo.user._id &&
+          {jobForm.ownerProfile._id !== userInfo.user._id && (
             <button className={styles.applyButton} onClick={handleApplyForJob}>
               Apply
-            </button>}
+            </button>
+          )}
         </div>
 
         <div className={styles.jobBody}>
-
           <div className={styles.jobMislanious}>
             <ul>
               <li className={styles.jobTexts}>
@@ -155,7 +151,8 @@ const FormById = () => {
               </li>
               {jobForm.totalDurations && (
                 <li className={styles.jobTexts}>
-                  Total Duration: {jobForm.totalDuration} {jobForm.totalDuration}
+                  Total Duration: {jobForm.totalDuration}{" "}
+                  {jobForm.totalDuration}
                 </li>
               )}
               {jobForm.workingHours && (
@@ -182,7 +179,7 @@ const FormById = () => {
               <div className={styles.skillsContainer} ref={skillsContainerRef}>
                 {jobForm.requiredSkills.map((skill, index) => (
                   <div key={index} className={styles.jobSkill}>
-                    {skillsDictionary[skill]}
+                    {skill.name}
                   </div>
                 ))}
               </div>
@@ -201,7 +198,6 @@ const FormById = () => {
           </div>
         </div>
       </div>
-
 
       {/* <div className={styles.applicantsSection}>
         <h2>Applicants</h2>
@@ -223,12 +219,9 @@ const FormById = () => {
           <div>No application for the Job yet</div>
         )} */}
 
-
-
       <div className={styles.applicantsSection}>
         <h2>Applicants</h2>
-        <div className={styles.upperscrollable} >
-
+        <div className={styles.upperscrollable}>
           {applicants.length > 0 ? (
             applicants.map((applicant, index) => (
               <div key={index} className={styles.applicantAvatarSection}>
@@ -248,9 +241,9 @@ const FormById = () => {
           )}
         </div>
         <div className={styles.lowerfixed}>
-
-          {jobForm.ownerProfile._id === userInfo.user._id && <div className={styles.shortlistSection}>
-            {/* <input
+          {jobForm.ownerProfile._id === userInfo.user._id && (
+            <div className={styles.shortlistSection}>
+              {/* <input
             type="number"
             id="noOfApplicants"
             value={noOfApplicants}
@@ -258,26 +251,25 @@ const FormById = () => {
             placeholder="Enter number of applicants to shortlist"
           /> */}
 
-
-            <button onClick={() => setIsModalOpen(true)} id="change-btn">
-              Shortlist
-            </button>
-          </div>}
-          {jobForm.ownerProfile._id === userInfo.user._id &&
+              <button onClick={() => setIsModalOpen(true)} id="change-btn">
+                Shortlist
+              </button>
+            </div>
+          )}
+          {jobForm.ownerProfile._id === userInfo.user._id && (
             <ShortlistModal
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
               onSubmit={shortlistApplication}
             />
-          }
-          {jobForm.ownerProfile._id !== userInfo.user._id &&
+          )}
+          {jobForm.ownerProfile._id !== userInfo.user._id && (
             <button onClick={handleViewMoreJobs} id="change-btn">
               view similar jobs
-          </button>
-          }
+            </button>
+          )}
         </div>
       </div>
-
     </div>
   );
 };

@@ -3,6 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const Skill = require("./skillModel");
 const Schema = mongoose.Schema;
 
 const yearValidator = {
@@ -132,10 +133,8 @@ const userSchema = new mongoose.Schema(
     ],
     skills: [
       {
-        skillId: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-        },
+        _id: false,
+        skillId: { type: mongoose.Schema.Types.ObjectId, ref: Skill, required: true },
         level: {
           type: Number,
           enum: [1, 2, 3, 4, 5],
@@ -159,9 +158,12 @@ const userSchema = new mongoose.Schema(
     resume: {
       type: String,
     },
-    jobBySkills: [{
-      type: mongoose.Schema.Types.ObjectId, ref: "JobApplicationForm"
-    }],
+    jobBySkills: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "JobApplicationForm",
+      },
+    ],
     recommendationBySkillFetchedAt: {
       type: Date,
       default: Date.now,
@@ -169,10 +171,10 @@ const userSchema = new mongoose.Schema(
     jobRecommendations: [
       {
         _id: false,
-        id: { type: mongoose.Schema.Types.ObjectId, ref: 'JobApplicationForm' },
+        id: { type: mongoose.Schema.Types.ObjectId, ref: "JobApplicationForm" },
         timestamp: { type: Date, default: Date.now },
       },
-],
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -197,16 +199,18 @@ userSchema.methods.getJWTToken = function () {
   });
 };
 
-userSchema.pre("save",async function (next) {
+userSchema.pre("save", async function (next) {
   if (this.jobRecommendations && this.jobRecommendations.length > 0) {
     this.jobRecommendations.sort((a, b) => b.timestamp - a.timestamp);
     if (this.jobRecommendations.length > MAX_RECOMMENDATIONS) {
-      this.jobRecommendations = this.jobRecommendations.slice(0, MAX_RECOMMENDATIONS);
+      this.jobRecommendations = this.jobRecommendations.slice(
+        0,
+        MAX_RECOMMENDATIONS
+      );
     }
   }
   next();
 });
-
 
 userSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
